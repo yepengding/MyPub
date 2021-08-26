@@ -20,7 +20,7 @@ const Details = styled.h5({
     color: "#292A2D"
 });
 
-const Publication = ({metadataUri, setDetail, setDetailModalShow}) => {
+const Publication = ({metadataUri, tokenId, setDetail, setDetailModalShow}) => {
     const [title, setTitle] = useState(`Loading...`);
     const [introduction, setIntroduction] = useState(`Loading...`);
     const [cid, setCid] = useState(`Loading...`);
@@ -32,12 +32,12 @@ const Publication = ({metadataUri, setDetail, setDetailModalShow}) => {
             const res = await fetch(`${metadataUri}`);
             const data = await res.json();
 
+            data.tokenId = tokenId;
             setTitle(data.title);
             setIntroduction(data.introduction);
             const metadataCid = metadataUri.split("/").pop();
             setCid(metadataCid);
             // setPublicationUrl(`/publication/${metadataCid}`);
-
             setMetadata(data);
 
         } catch (err) {

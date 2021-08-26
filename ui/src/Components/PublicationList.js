@@ -3,6 +3,8 @@ import Publication from './Publication';
 import {Button, Columns, Content, Form, Modal} from 'react-bulma-components';
 import {BigNumber} from "ethers";
 import styled from "styled-components";
+import {parseUnits} from "ethers/lib/utils";
+import {toast} from "react-toastify";
 
 const {Field, Label, Control, Input} = Form;
 
@@ -13,7 +15,6 @@ const Download = styled.a`
 `;
 
 const PublicationList = ({provider, contract, iface, ipfsGateway, limit, accountAddress}) => {
-    const [metadataUrl, setMetadataUrl] = useState(`Loading...`);
     const [publications, setPublications] = useState([]);
     const [detailModalShow, setDetailModalShow] = useState(false);
     const [detail, setDetail] = useState(false);
@@ -55,7 +56,7 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
 
                     const newItem = (
                         <Columns.Column key={i}>
-                            <Publication metadataUri={metadataUri} setDetail={setDetail}
+                            <Publication metadataUri={metadataUri} tokenId={tokenId} setDetail={setDetail}
                                          setDetailModalShow={setDetailModalShow}/>
                         </Columns.Column>
                     );
@@ -64,7 +65,6 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                         return [...prev, newItem];
                     });
 
-                    setMetadataUrl(metadataUrl);
                 });
 
             } catch (err) {
@@ -72,7 +72,22 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
             }
         }
         getSupply();
-    }, [accountAddress, contract, limit, metadataUrl]);
+    }, [accountAddress, contract, limit]);
+
+    const pay = async () => {
+        console.log(detail.price);
+        console.log(detail.tokenId);
+        try {
+            const tokenId = BigNumber.from(detail.tokenId).toNumber();
+            const amount = parseUnits(detail.price);
+            const r = await contract.purchase(tokenId, {value: amount});
+            console.log(r);
+            toast.success("Paid successfully!")
+        } catch (err) {
+            toast.error("Something wrong while paying.");
+            console.error(err)
+        }
+    }
 
     return (
         <>
@@ -169,7 +184,7 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                             </Columns.Column>
 
                             <Columns.Column>
-                                <Button color="warning" fullwidth>
+                                <Button color="warning" fullwidth onClick={pay}>
                                     Pay {detail.price} ETH
                                 </Button>
                             </Columns.Column>

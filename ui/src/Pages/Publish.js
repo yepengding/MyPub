@@ -4,6 +4,7 @@ import Hero from '../Components/Hero';
 import {useEffect, useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {parseUnits} from "ethers/lib/utils";
 
 const {Label, Field, Control, Input, InputFile} = Form;
 const {Block} = Panel;
@@ -37,7 +38,6 @@ const Publish = ({contract, ipfsGateway}) => {
         }
 
         let price;
-
         if (priceFiled == null) {
             toast.info("Please set a price");
             return;
@@ -48,7 +48,6 @@ const Publish = ({contract, ipfsGateway}) => {
                 return;
             }
         }
-
         price = price.toString();
 
         if (introductionField == null || introductionField.length === 0 || introductionField.length > 255) {
@@ -61,7 +60,6 @@ const Publish = ({contract, ipfsGateway}) => {
             const integrity = data.integrity;
             return {cid, integrity}
         });
-
         toast.info("Uploaded preview");
 
         const uploadedFile = await upload(selectedFile).then((data) => {
@@ -69,7 +67,6 @@ const Publish = ({contract, ipfsGateway}) => {
             const integrity = data.integrity;
             return {cid, integrity}
         });
-
         toast.info("Uploaded file");
 
         const metaData = generateMetaDataFile(titleField, selectedFile.name, getSuffix(selectedFile.name), price, introductionField,
@@ -80,13 +77,13 @@ const Publish = ({contract, ipfsGateway}) => {
             const integrity = data.integrity;
             return {cid, integrity}
         });
-
         toast.info("Uploaded metadata");
 
 
         try {
+            // Parse ether: float to Wei: BigNumber
+            price = parseUnits(price);
             await contract.mint(uploadedMetaData.cid, price);
-            setLoadingPublishBtn(false);
             toast.success(`Published ${selectedFile.name} successfully.`)
         } catch (err) {
             console.error(err)
@@ -99,6 +96,8 @@ const Publish = ({contract, ipfsGateway}) => {
         setPriceField("0");
         setIntroductionField("");
         setDisabledPublishBtn(true);
+
+        setLoadingPublishBtn(false);
     }
 
     // Change disabled state of "Publish" button
