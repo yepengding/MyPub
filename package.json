@@ -1,0 +1,30 @@
+{
+  "name": "mypub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx ganache filecoin",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yepengding/MyPub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yepengding/MyPub/issues"
+  },
+  "homepage": "https://github.com/yepengding/MyPub#readme",
+  "dependencies": {
+    "@ganache/filecoin": "0.1.4",
+    "@openzeppelin/contracts": "^3.4.0",
+    "ganache": "7.0.0-filecoin.5"
+  },
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.2.3",
+    "truffle": "^5.2.7-preserves.5"
+  }
+}
