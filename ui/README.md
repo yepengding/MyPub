@@ -28,3 +28,9 @@ npm run start
 ```
 npm run build
 ```
+
+## Tech Stack
+- [React](https://reactjs.org/)
+- [Ethers.js](https://docs.ethers.io/v5/)
+- [react-bulma-components](https://react-bulma.dev)
+- [styled-components](https://styled-components.com/)
