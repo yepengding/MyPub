@@ -15,13 +15,13 @@ contract Publication is ERC721 {
     //     _;
     // }
 
-    event Published(address indexed _from, uint256 _id, uint _price);
+    event Published(address indexed _from, uint256 _id, string _price);
 
     constructor() ERC721("Publication", "PUB") public {
         _setBaseURI("http://localhost:8080/ipfs/");
     }
 
-    function mint(string memory _cid, uint _price) public returns (uint256) {
+    function mint(string memory _cid, string memory _price) public returns (uint256) {
         _id.increment();
 
         uint256 newId = _id.current();

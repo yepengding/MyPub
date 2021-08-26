@@ -32,7 +32,7 @@ const Publication = ({metadataUri, setDetail, setDetailModalShow}) => {
             const res = await fetch(`${metadataUri}`);
             const data = await res.json();
 
-            setTitle(data.filename);
+            setTitle(data.title);
             setIntroduction(data.introduction);
             const metadataCid = metadataUri.split("/").pop();
             setCid(metadataCid);

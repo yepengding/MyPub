@@ -5,19 +5,26 @@ import {useEffect, useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-const {Field, Control, Input, InputFile} = Form;
+const {Label, Field, Control, Input, InputFile} = Form;
 const {Block} = Panel;
 
 const Publish = ({contract, ipfsGateway}) => {
 
+    const [titleField, setTitleField] = useState("");
     const [selectedPreview, setSelectedPreview] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [priceFiled, setPriceField] = useState("0");
     const [introductionField, setIntroductionField] = useState("");
     const [disabledPublishBtn, setDisabledPublishBtn] = useState(true);
     const [loadingPublishBtn, setLoadingPublishBtn] = useState(false);
 
     const publish = async () => {
         setLoadingPublishBtn(true);
+
+        if (titleField == null || titleField.length === 0 || titleField.length > 255) {
+            toast.info("Please write a suitable title");
+            return;
+        }
 
         if (selectedPreview == null) {
             toast.info("Please select a preview");
@@ -29,8 +36,23 @@ const Publish = ({contract, ipfsGateway}) => {
             return;
         }
 
-        if (introductionField == null || introductionField.length === 0) {
-            toast.info("Please write an introduction to your publication");
+        let price;
+
+        if (priceFiled == null) {
+            toast.info("Please set a price");
+            return;
+        } else {
+            price = parseFloat(priceFiled);
+            if (price <= 0) {
+                toast.info("Please set a suitable price");
+                return;
+            }
+        }
+
+        price = price.toString();
+
+        if (introductionField == null || introductionField.length === 0 || introductionField.length > 255) {
+            toast.info("Please write a suitable introduction");
             return;
         }
 
@@ -50,7 +72,7 @@ const Publish = ({contract, ipfsGateway}) => {
 
         toast.info("Uploaded file");
 
-        const metaData = generateMetaDataFile(selectedFile.name, getSuffix(selectedFile.name), introductionField,
+        const metaData = generateMetaDataFile(titleField, selectedFile.name, getSuffix(selectedFile.name), price, introductionField,
             uploadedPreview.cid, uploadedPreview.integrity, uploadedFile.cid, uploadedFile.integrity);
 
         const uploadedMetaData = await upload(metaData).then((data) => {
@@ -61,8 +83,9 @@ const Publish = ({contract, ipfsGateway}) => {
 
         toast.info("Uploaded metadata");
 
+
         try {
-            await contract.mint(uploadedMetaData.cid, 1);
+            await contract.mint(uploadedMetaData.cid, price);
             setLoadingPublishBtn(false);
             toast.success(`Published ${selectedFile.name} successfully.`)
         } catch (err) {
@@ -70,16 +93,18 @@ const Publish = ({contract, ipfsGateway}) => {
             toast.error(`Failed to published ${selectedFile.name}.`)
         }
 
+        setTitleField("");
         setSelectedPreview(null);
         setSelectedFile(null);
+        setPriceField("0");
         setIntroductionField("");
         setDisabledPublishBtn(true);
     }
 
     // Change disabled state of "Publish" button
     useEffect(() => {
-        setDisabledPublishBtn(selectedPreview == null || selectedFile == null || introductionField == null || introductionField.length === 0);
-    }, [selectedPreview, selectedFile, introductionField]);
+        setDisabledPublishBtn(titleField.length === 0 || selectedPreview == null || selectedFile == null || priceFiled <= 0 || introductionField == null || introductionField.length === 0);
+    }, [selectedPreview, selectedFile, introductionField, titleField.length, priceFiled]);
 
     const upload = (file) => {
         const formData = new FormData();
@@ -114,10 +139,12 @@ const Publish = ({contract, ipfsGateway}) => {
         return result;
     };
 
-    const generateMetaDataFile = (filename, suffix, introduction, preview_cid, preview_integrity, file_cid, file_integrity) => {
+    const generateMetaDataFile = (title, filename, suffix, price, introduction, preview_cid, preview_integrity, file_cid, file_integrity) => {
         const data = JSON.stringify({
+            title: title,
             filename: filename,
             suffix: suffix,
+            price: price,
             introduction: introduction,
             preview_cid: preview_cid,
             preview_integrity: preview_integrity,
@@ -142,6 +169,20 @@ const Publish = ({contract, ipfsGateway}) => {
 
             <Container>
                 <Box>
+                    <Field>
+                        <Label>
+                            Title
+                        </Label>
+                        <Control>
+                            <Input
+                                placeholder="Publication title"
+                                type="text"
+                                value={titleField}
+                                onChange={(event) => setTitleField(event.target.value)}
+                            />
+                        </Control>
+                    </Field>
+
                     <Columns>
                         <Columns.Column>
                             <InputFile
@@ -158,6 +199,24 @@ const Publish = ({contract, ipfsGateway}) => {
                     </Columns>
 
                     <Field>
+                        <Label>
+                            Price
+                        </Label>
+                        <Control>
+                            <Input
+                                placeholder="Price"
+                                type="number"
+                                min={0}
+                                value={priceFiled}
+                                onChange={(event) => setPriceField(event.target.value)}
+                            />
+                        </Control>
+                    </Field>
+
+                    <Field>
+                        <Label>
+                            Introduction
+                        </Label>
                         <Control>
                             <Input
                                 placeholder="Introduction to your publication"

@@ -89,7 +89,7 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                 <Modal.Card>
                     <Modal.Card.Head showClose onClose={() => setDetailModalShow(false)}>
                         <Modal.Card.Title>
-                            {detail.filename}
+                            {detail.title}
                         </Modal.Card.Title>
                     </Modal.Card.Head>
                     <Modal.Card.Body>
@@ -166,6 +166,12 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                                         Preview
                                     </Button>
                                 </Download>
+                            </Columns.Column>
+
+                            <Columns.Column>
+                                <Button color="warning" fullwidth>
+                                    Pay {detail.price} ETH
+                                </Button>
                             </Columns.Column>
 
                             <Columns.Column>
