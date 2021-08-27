@@ -33,8 +33,10 @@ contract Publication is ERC721 {
         _mint(msg.sender, newId);
         _setTokenURI(newId, _cid);
 
-        emit Published(msg.sender, newId, _price);
         prices[newId] = _price;
+        emit Published(msg.sender, newId, _price);
+        // Creator automatically paid
+        emit Paid(msg.sender, newId);
         return newId;
     }
 

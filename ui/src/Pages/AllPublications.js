@@ -5,13 +5,13 @@ import PublicationList from '../Components/PublicationList';
 
 import {Link} from "react-router-dom";
 
-const AllPublications = ({contract, ipfsGateway}) => {
+const AllPublications = ({contract, accountAddress}) => {
     return (
         <Section>
             <Hero/>
             <Heading size={5} renderAs="h1">All Publications</Heading>
             <Columns>
-                {contract && <PublicationList contract={contract} ipfsGateway={ipfsGateway}/>}
+                {contract && accountAddress && <PublicationList contract={contract}/>}
             </Columns>
             <p>Go <Link to="/mine/publish">here</Link> to publish your work :)</p>
         </Section>

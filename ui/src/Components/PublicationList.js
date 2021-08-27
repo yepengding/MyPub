@@ -4,7 +4,10 @@ import {Button, Columns, Content, Form, Modal} from 'react-bulma-components';
 import {BigNumber} from "ethers";
 import styled from "styled-components";
 import {parseUnits} from "ethers/lib/utils";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
+import {ipfsConfig} from "../config";
+import {connect} from "react-redux";
+
 
 const {Field, Label, Control, Input} = Form;
 
@@ -14,11 +17,11 @@ const Download = styled.a`
   display: inline-block;
 `;
 
-const PublicationList = ({provider, contract, iface, ipfsGateway, limit, accountAddress}) => {
+const PublicationList = ({contract, limit, accountAddress, currentAccountAddress}) => {
     const [publications, setPublications] = useState([]);
     const [detailModalShow, setDetailModalShow] = useState(false);
     const [detail, setDetail] = useState(false);
-
+    const [payBtnLoading, setPayBtnLoading] = useState(false);
 
     const times = n => f => {
         let iter = i => {
@@ -29,64 +32,78 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
         return iter(0)
     }
 
-    useEffect(() => {
-        const getSupply = async () => {
-            try {
-                const galleryContract = contract;
-                const totalSupplyHex = await galleryContract.totalSupply();
-                let totalSupply = BigNumber.from(totalSupplyHex).toNumber();
-                if (limit != null) {
-                    totalSupply = Math.min(totalSupply, limit);
+    const getSupply = async (paidTokenIds) => {
+        if (!currentAccountAddress) {
+            return
+        }
+        try {
+            const totalSupplyHex = await contract.totalSupply();
+            let totalSupply = BigNumber.from(totalSupplyHex).toNumber();
+
+            // Limit the number of presented supplies
+            if (limit != null) {
+                totalSupply = Math.min(totalSupply, limit);
+            }
+
+            // Query publications of the passed account
+            let accountTokenIds = null;
+            if (accountAddress) {
+                const publishedEvents = await contract.queryFilter(contract.filters.Published(accountAddress), 0);
+                accountTokenIds = publishedEvents.map(e => BigNumber.from(e.args[1]).toNumber());
+            }
+
+            // Query paid publications of the current account
+            if (currentAccountAddress) {
+                const paidEventEvents = await contract.queryFilter(contract.filters.Paid(currentAccountAddress), 0);
+                paidTokenIds.push(...paidEventEvents.map(e => BigNumber.from(e.args[1]).toNumber()))
+            }
+
+            times(totalSupply)(async (i) => {
+                const tokenIdHex = await contract.tokenByIndex(i);
+                const tokenId = BigNumber.from(tokenIdHex).toNumber();
+                if (accountTokenIds && !accountTokenIds.includes(tokenId)) {
+                    return
                 }
+                const metadataUri = await contract.tokenURI(tokenId);
 
-                let accountTokenIds = null;
-                if (accountAddress != null) {
-                    const published = contract.filters.Published(accountAddress);
-                    const events = await contract.queryFilter(published, 0);
-                    accountTokenIds = events.map(e => BigNumber.from(e.args[1]).toNumber())
-                }
+                const newItem = (
+                    <Columns.Column key={i}>
+                        <Publication metadataUri={metadataUri} tokenId={tokenId} paidTokenIds={paidTokenIds}
+                                     setDetail={setDetail}
+                                     setDetailModalShow={setDetailModalShow}/>
+                    </Columns.Column>
+                );
 
-                times(totalSupply)(async (i) => {
-                    const tokenIdHex = await galleryContract.tokenByIndex(i);
-                    const tokenId = BigNumber.from(tokenIdHex).toNumber();
-                    if (accountTokenIds && !accountTokenIds.includes(tokenId)) {
-                        return
-                    }
-                    const metadataUri = await galleryContract.tokenURI(tokenId);
-
-                    const newItem = (
-                        <Columns.Column key={i}>
-                            <Publication metadataUri={metadataUri} tokenId={tokenId} setDetail={setDetail}
-                                         setDetailModalShow={setDetailModalShow}/>
-                        </Columns.Column>
-                    );
-
-                    setPublications((prev) => {
-                        return [...prev, newItem];
-                    });
-
+                setPublications((prev) => {
+                    return [...prev, newItem];
                 });
 
-            } catch (err) {
-                console.log(err)
-            }
+            });
+
+        } catch (err) {
+            console.log(err)
         }
-        getSupply();
-    }, [accountAddress, contract, limit]);
+    }
+
+    useEffect(() => {
+        getSupply([]);
+    }, []);
 
     const pay = async () => {
-        console.log(detail.price);
-        console.log(detail.tokenId);
         try {
             const tokenId = BigNumber.from(detail.tokenId).toNumber();
             const amount = parseUnits(detail.price);
-            const r = await contract.purchase(tokenId, {value: amount});
-            console.log(r);
-            toast.success("Paid successfully!")
+            await contract.purchase(tokenId, {value: amount});
+            toast.success("Paid successfully!");
+            setPublications([]);
+            await getSupply([tokenId]);
+
+            setDetailModalShow(false);
         } catch (err) {
+            console.error(err);
             toast.error("Something wrong while paying.");
-            console.error(err)
         }
+
     }
 
     return (
@@ -176,7 +193,7 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                     >
                         <Columns>
                             <Columns.Column>
-                                <Download href={ipfsGateway + "/" + detail.preview_cid} target="_blank" download>
+                                <Download href={ipfsConfig.gateway + "/" + detail.preview_cid} target="_blank" download>
                                     <Button fullwidth>
                                         Preview
                                     </Button>
@@ -184,14 +201,19 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                             </Columns.Column>
 
                             <Columns.Column>
-                                <Button color="warning" fullwidth onClick={pay}>
-                                    Pay {detail.price} ETH
+                                <Button color="warning" fullwidth onClick={() => {
+                                    setPayBtnLoading(true);
+                                    pay().then(() => {
+                                        setPayBtnLoading(false);
+                                    });
+                                }} disabled={detail.paid} loading={payBtnLoading}>
+                                    {detail.paid ? "Paid" : `Pay ${detail.price} ETH`}
                                 </Button>
                             </Columns.Column>
 
                             <Columns.Column>
-                                <Download href={ipfsGateway + "/" + detail.file_cid} target="_blank" download>
-                                    <Button color="primary" fullwidth>
+                                <Download href={ipfsConfig.gateway + "/" + detail.file_cid} target="_blank" download>
+                                    <Button color="primary" fullwidth disabled={!detail.paid}>
                                         Download
                                     </Button>
                                 </Download>
@@ -203,9 +225,16 @@ const PublicationList = ({provider, contract, iface, ipfsGateway, limit, account
                 </Modal.Card>
 
             </Modal>
+            <ToastContainer/>
         </>
 
     );
 };
 
-export default PublicationList;
+const mapStateToProps = (state) => {
+    return {
+        currentAccountAddress: state.account.address,
+    };
+};
+
+export default connect(mapStateToProps)(PublicationList);

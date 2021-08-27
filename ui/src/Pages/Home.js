@@ -5,9 +5,14 @@ import PublicationList from '../Components/PublicationList';
 import {BigNumber} from "ethers";
 import {parseUnits} from "ethers/lib/utils";
 
+
 const Home = ({contract, ipfsGateway}) => {
 
-    const test = async () => {
+    const test = () => {
+        console.log("address");
+    }
+
+    const testWithdraw = async () => {
         try {
             const amount = parseUnits("0.8");
             const r = await contract.withdrawAmount(amount);

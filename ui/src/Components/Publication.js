@@ -20,7 +20,13 @@ const Details = styled.h5({
     color: "#292A2D"
 });
 
-const Publication = ({metadataUri, tokenId, setDetail, setDetailModalShow}) => {
+const Publication = ({
+                         metadataUri,
+                         tokenId,
+                         paidTokenIds,
+                         setDetail,
+                         setDetailModalShow
+                     }) => {
     const [title, setTitle] = useState(`Loading...`);
     const [introduction, setIntroduction] = useState(`Loading...`);
     const [cid, setCid] = useState(`Loading...`);
@@ -38,6 +44,8 @@ const Publication = ({metadataUri, tokenId, setDetail, setDetailModalShow}) => {
             const metadataCid = metadataUri.split("/").pop();
             setCid(metadataCid);
             // setPublicationUrl(`/publication/${metadataCid}`);
+            data.paid = paidTokenIds.includes(tokenId);
+
             setMetadata(data);
 
         } catch (err) {

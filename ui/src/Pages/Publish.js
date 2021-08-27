@@ -5,11 +5,14 @@ import {useEffect, useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {parseUnits} from "ethers/lib/utils";
+import {ipfsConfig} from "../config";
+
+import {connect} from "react-redux";
 
 const {Label, Field, Control, Input, InputFile} = Form;
 const {Block} = Panel;
 
-const Publish = ({contract, ipfsGateway}) => {
+const Publish = ({contract, currentAccountAddress}) => {
 
     const [titleField, setTitleField] = useState("");
     const [selectedPreview, setSelectedPreview] = useState(null);
@@ -21,6 +24,11 @@ const Publish = ({contract, ipfsGateway}) => {
 
     const publish = async () => {
         setLoadingPublishBtn(true);
+
+        if (!currentAccountAddress) {
+            toast.info("Please enable your wallet");
+            return;
+        }
 
         if (titleField == null || titleField.length === 0 || titleField.length > 255) {
             toast.info("Please write a suitable title");
@@ -69,7 +77,7 @@ const Publish = ({contract, ipfsGateway}) => {
         });
         toast.info("Uploaded file");
 
-        const metaData = generateMetaDataFile(titleField, selectedFile.name, getSuffix(selectedFile.name), price, introductionField,
+        const metaData = generateMetaDataFile(titleField, selectedFile.name, getSuffix(selectedFile.name), currentAccountAddress, price, introductionField,
             uploadedPreview.cid, uploadedPreview.integrity, uploadedFile.cid, uploadedFile.integrity);
 
         const uploadedMetaData = await upload(metaData).then((data) => {
@@ -115,7 +123,7 @@ const Publish = ({contract, ipfsGateway}) => {
 
         let result;
 
-        result = fetch(`${ipfsGateway}/upload`, {
+        result = fetch(`${ipfsConfig.gateway}/upload`, {
             method: 'POST',
             body: formData
         }).then(
@@ -131,18 +139,20 @@ const Publish = ({contract, ipfsGateway}) => {
         ).catch(
             error => {
                 toast.error("Something wrong while uploading.");
-                return null
+                console.log(error);
+                return null;
             }
         );
 
         return result;
     };
 
-    const generateMetaDataFile = (title, filename, suffix, price, introduction, preview_cid, preview_integrity, file_cid, file_integrity) => {
+    const generateMetaDataFile = (title, filename, suffix, creator_address, price, introduction, preview_cid, preview_integrity, file_cid, file_integrity) => {
         const data = JSON.stringify({
             title: title,
             filename: filename,
             suffix: suffix,
+            creator_address: creator_address,
             price: price,
             introduction: introduction,
             preview_cid: preview_cid,
@@ -240,4 +250,10 @@ const Publish = ({contract, ipfsGateway}) => {
     )
 };
 
-export default Publish;
+const mapStateToProps = (state) => {
+    return {
+        currentAccountAddress: state.account.address,
+    };
+};
+
+export default connect(mapStateToProps)(Publish);
