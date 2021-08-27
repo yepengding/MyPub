@@ -16,7 +16,7 @@ contract Publication is ERC721 {
     // }
 
     mapping(uint256 => uint256) private prices;
-    mapping(address => uint) private balances;
+    mapping(address => uint256) private balances;
 
     event Published(address indexed _from, uint256 _id, uint256 _price);
     event Paid(address indexed _from, uint256 _id);
@@ -50,9 +50,13 @@ contract Publication is ERC721 {
 
     // Withdraw gains
     function withdrawAmount(uint256 amount) public {
-        require(amount <= balances[msg.sender], "Cannot withdraw more than current balance.");
+        require(amount > 0 && amount <= balances[msg.sender], "Cannot withdraw more than current balance.");
         balances[msg.sender] -= amount;
         msg.sender.transfer(amount);
+    }
+
+    function getBalance() public view returns (uint256) {
+        return balances[msg.sender];
     }
 
     function getPrice(uint256 _token_id) public view returns (uint256) {

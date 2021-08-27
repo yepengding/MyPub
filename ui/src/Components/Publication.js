@@ -51,7 +51,7 @@ const Publication = ({
         } catch (err) {
             console.log(err)
         }
-    }, [metadataUri])
+    }, [metadataUri, paidTokenIds, tokenId])
 
     useEffect(() => {
         getMetadata();

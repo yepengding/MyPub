@@ -14,11 +14,12 @@ import Footer from './Components/Footer';
 import {useEffect, useState} from "react";
 import MyPublications from "./Pages/MyPublications";
 
-import {ethereumConfig, ipfsConfig} from "./config";
+import {ethereumConfig} from "./config";
 import {toast} from "react-toastify";
 
 import {setAddress} from './store/accountSlice'
 import {connect} from "react-redux";
+import MyBalance from "./Pages/MyBalance";
 
 const App = ({setAddress}) => {
 
@@ -45,25 +46,30 @@ const App = ({setAddress}) => {
                 console.log(`Hello, ${address}. \nWelcome to use MyPub.`);
             }));
         });
-    }, []);
+    }, [setAddress]);
 
     return (
         <Container>
             <Switch>
                 <Route path="/" exact>
                     <Navigation/>
-                    <Home contract={publicationContract} ipfsGateway={ipfsConfig.gateway}/>
+                    <Home contract={publicationContract}/>
                     <Footer/>
                 </Route>
                 <Route path="/mine/publish">
                     <Navigation/>
-                    <Publish contract={publicationContract} ipfsGateway={ipfsConfig.gateway}/>
+                    <Publish contract={publicationContract}/>
                     <Footer/>
                 </Route>
                 <Route path="/mine/publications">
                     <Navigation/>
                     <MyPublications contract={publicationContract}
                                     accountAddress={accountAddress}/>
+                    <Footer/>
+                </Route>
+                <Route path="/mine/balance">
+                    <Navigation/>
+                    <MyBalance contract={publicationContract}/>
                     <Footer/>
                 </Route>
                 <Route path="/about">

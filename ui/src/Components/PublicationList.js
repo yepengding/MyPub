@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Publication from './Publication';
 import {Button, Columns, Content, Form, Modal} from 'react-bulma-components';
 import {BigNumber} from "ethers";
@@ -32,7 +32,7 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
         return iter(0)
     }
 
-    const getSupply = async (paidTokenIds) => {
+    const getSupply = useCallback(async (paidTokenIds) => {
         if (!currentAccountAddress) {
             return
         }
@@ -83,11 +83,11 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [accountAddress, contract, currentAccountAddress, limit]);
 
     useEffect(() => {
         getSupply([]);
-    }, []);
+    }, [getSupply]);
 
     const pay = async () => {
         try {

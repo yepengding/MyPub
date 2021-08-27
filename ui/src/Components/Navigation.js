@@ -50,6 +50,11 @@ const Navigation = () => {
                                     Publications
                                 </StyledLink>
                             </Navbar.Item>
+                            <Navbar.Item renderAs="span">
+                                <StyledLink to="/mine/balance">
+                                    Balance
+                                </StyledLink>
+                            </Navbar.Item>
                         </Navbar.Dropdown>
                     </Navbar.Item>
 

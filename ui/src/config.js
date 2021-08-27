@@ -6,6 +6,7 @@ const ethereumConfig = {
         "function mint(string, uint256) public returns (uint256)",
         "function purchase(uint256) public payable",
         "function withdrawAmount(uint256) public",
+        "function getBalance() public view returns (uint256)",
         "function ownerOf(uint256) view returns (address)",
         "function totalSupply() view returns (uint)",
         "function tokenByIndex(uint) view returns (uint)",

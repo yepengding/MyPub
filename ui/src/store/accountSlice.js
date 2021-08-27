@@ -8,7 +8,7 @@ export const accountSlice = createSlice({
     reducers: {
         setAddress: (state, action) => {
             state.address = action.payload
-        },
+        }
     },
 })
 
