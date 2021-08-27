@@ -21,6 +21,12 @@ A Decentralized Privacy-Preserving Publishing Platform
 
 ## Diagrams
 
+### Architecture
+
+![Architecture](./document/Architecture.png)
+
 ### Sequence Diagrams
 
 ![Chain Linking](./document/ChainLinking.png)
+![Publishing](./document/Publishing.png)
+
