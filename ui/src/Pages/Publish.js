@@ -8,6 +8,7 @@ import {parseUnits} from "ethers/lib/utils";
 import {ipfsConfig} from "../config";
 
 import {connect} from "react-redux";
+import {Link} from "react-router-dom";
 
 const {Label, Field, Control, Input, InputFile} = Form;
 const {Block} = Panel;
@@ -15,6 +16,7 @@ const {Block} = Panel;
 const Publish = ({contract, currentAccountAddress}) => {
 
     const [titleField, setTitleField] = useState("");
+    const [formatField, setFormatField] = useState("");
     const [selectedPreview, setSelectedPreview] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedDecryptor, setSelectedDecryptor] = useState(null);
@@ -90,7 +92,7 @@ const Publish = ({contract, currentAccountAddress}) => {
         });
         toast.info("Uploaded decryptor");
 
-        const metaData = generateMetaDataFile(titleField, selectedFile.name, getSuffix(selectedFile.name), currentAccountAddress, price, introductionField,
+        const metaData = generateMetaDataFile(titleField, selectedFile.name, formatField, currentAccountAddress, price, introductionField,
             uploadedPreview, uploadedFile, uploadedDecryptor);
 
         const uploadedMetaData = await upload(metaData).then((data) => {
@@ -112,6 +114,7 @@ const Publish = ({contract, currentAccountAddress}) => {
         }
 
         setTitleField("");
+        setFormatField("");
         setSelectedPreview(null);
         setSelectedFile(null);
         setPriceField("0");
@@ -123,8 +126,8 @@ const Publish = ({contract, currentAccountAddress}) => {
 
     // Change disabled state of "Publish" button
     useEffect(() => {
-        setDisabledPublishBtn(titleField.length === 0 || selectedPreview == null || selectedFile == null || priceFiled <= 0 || introductionField == null || introductionField.length === 0);
-    }, [selectedPreview, selectedFile, introductionField, titleField.length, priceFiled]);
+        setDisabledPublishBtn(titleField.length === 0 || formatField.length === 0 || selectedPreview == null || selectedFile == null || priceFiled <= 0 || introductionField == null || introductionField.length === 0);
+    }, [selectedPreview, selectedFile, introductionField, titleField.length, priceFiled, formatField.length]);
 
     const upload = (file) => {
         const formData = new FormData();
@@ -160,11 +163,11 @@ const Publish = ({contract, currentAccountAddress}) => {
         return result;
     };
 
-    const generateMetaDataFile = (title, filename, suffix, creator_address, price, introduction, preview, file, decryptor) => {
+    const generateMetaDataFile = (title, filename, format, creator_address, price, introduction, preview, file, decryptor) => {
         const data = JSON.stringify({
             title: title,
             filename: filename,
-            suffix: suffix,
+            format: format,
             creator_address: creator_address,
             price: price,
             introduction: introduction,
@@ -181,10 +184,10 @@ const Publish = ({contract, currentAccountAddress}) => {
         return new File([blob], `${filename}.meta.json`);
     }
 
-    const getSuffix = (filename) => {
-        const split_str = filename.split('.');
-        return split_str.length > 1 ? split_str.pop() : "";
-    }
+    // const getSuffix = (filename) => {
+    //     const split_str = filename.split('.');
+    //     return split_str.length > 1 ? split_str.pop() : "";
+    // }
 
     return (
         <Section>
@@ -193,19 +196,38 @@ const Publish = ({contract, currentAccountAddress}) => {
 
             <Container>
                 <Box>
-                    <Field>
-                        <Label>
-                            Title
-                        </Label>
-                        <Control>
-                            <Input
-                                placeholder="Publication title"
-                                type="text"
-                                value={titleField}
-                                onChange={(event) => setTitleField(event.target.value)}
-                            />
-                        </Control>
-                    </Field>
+                    <Columns>
+                        <Columns.Column>
+                            <Field>
+                                <Label>
+                                    Title
+                                </Label>
+                                <Control>
+                                    <Input
+                                        placeholder="Publication title"
+                                        type="text"
+                                        value={titleField}
+                                        onChange={(event) => setTitleField(event.target.value)}
+                                    />
+                                </Control>
+                            </Field>
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Field>
+                                <Label>
+                                    Format
+                                </Label>
+                                <Control>
+                                    <Input
+                                        placeholder="Suffix or format information"
+                                        type="text"
+                                        value={formatField}
+                                        onChange={(event) => setFormatField(event.target.value)}
+                                    />
+                                </Control>
+                            </Field>
+                        </Columns.Column>
+                    </Columns>
 
                     <Columns>
                         <Columns.Column>
@@ -225,7 +247,7 @@ const Publish = ({contract, currentAccountAddress}) => {
                                 fullwidth boxed name="file" label='Select the decryptor...'
                                 onChange={(event) => setSelectedDecryptor(event.target.files[0])}
                             />
-                            <p>Don't have a decryptor? Check details here!</p>
+                            <p>Don't have a decryptor? Check details <Link to="/cipher/encryption">here</Link>!</p>
                         </Columns.Column>
                     </Columns>
 

@@ -20,6 +20,8 @@ import {toast} from "react-toastify";
 import {setAddress} from './store/accountSlice'
 import {connect} from "react-redux";
 import MyBalance from "./Pages/MyBalance";
+import Encryption from "./Pages/Encryption";
+import Decryption from "./Pages/Decryption";
 
 const App = ({setAddress}) => {
 
@@ -68,6 +70,16 @@ const App = ({setAddress}) => {
                 <Route path="/mine/balance">
                     <Navigation/>
                     <MyBalance contract={publicationContract}/>
+                    <Footer/>
+                </Route>
+                <Route path="/cipher/encryption">
+                    <Navigation/>
+                    <Encryption/>
+                    <Footer/>
+                </Route>
+                <Route path="/cipher/decryption">
+                    <Navigation/>
+                    <Decryption/>
                     <Footer/>
                 </Route>
                 <Route path="/about">

@@ -18,4 +18,8 @@ const ipfsConfig = {
     gateway: "http://localhost:5001/ipfs"
 }
 
-export {ethereumConfig, ipfsConfig}
+const serviceConfig = {
+    base_url: "http://localhost:8080"
+}
+
+export {ethereumConfig, ipfsConfig, serviceConfig}

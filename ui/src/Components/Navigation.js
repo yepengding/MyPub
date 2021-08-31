@@ -58,6 +58,23 @@ const Navigation = () => {
                         </Navbar.Dropdown>
                     </Navbar.Item>
 
+                    <Navbar.Item dropdown hoverable href="#">
+                        <Navbar.Link arrowless={false}>
+                            Cipher
+                        </Navbar.Link>
+                        <Navbar.Dropdown>
+                            <Navbar.Item renderAs="span">
+                                <StyledLink to="/cipher/encryption">
+                                    Encryption
+                                </StyledLink>
+                            </Navbar.Item>
+                            <Navbar.Item renderAs="span">
+                                <StyledLink to="/cipher/decryption">
+                                    Decryption
+                                </StyledLink>
+                            </Navbar.Item>
+                        </Navbar.Dropdown>
+                    </Navbar.Item>
 
                 </Navbar.Container>
                 <Navbar.Container position="end">

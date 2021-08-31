@@ -4,8 +4,8 @@ A Decentralized Privacy-Preserving Publishing Platform.
 
 ## Components
 
-* [MyPub Front + Chain Linker](./ui)
-* [MyPub Contract](./contracts)
+* [MyPub Front + Chain Linker](https://github.com/yepengding/MyPub/tree/main/ui)
+* [MyPub Contract](https://github.com/yepengding/MyPub/tree/main/contracts)
 * MyPub Cipher
     - [Encryptor](https://github.com/yepengding/MyPubEncryptor)
     - [Decryptor](https://github.com/yepengding/MyPubDecryptor)

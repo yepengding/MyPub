@@ -20,7 +20,7 @@ const Download = styled.a`
 const PublicationList = ({contract, limit, accountAddress, currentAccountAddress}) => {
     const [publications, setPublications] = useState([]);
     const [detailModalShow, setDetailModalShow] = useState(false);
-    const [detail, setDetail] = useState(false);
+    const [detail, setDetail] = useState({});
     const [payBtnLoading, setPayBtnLoading] = useState(false);
 
     const times = n => f => {
@@ -189,7 +189,7 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
                                 <Control>
                                     <Input
                                         readOnly
-                                        value={detail.suffix}
+                                        value={detail.format}
                                     />
                                 </Control>
                             </Field>
