@@ -133,13 +133,24 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
                                 <Control>
                                     <Input
                                         readOnly
+                                        value={detail.publication_cid}
+                                    />
+                                </Control>
+                            </Field>
+                            <Field>
+                                <Label>
+                                    File ID
+                                </Label>
+                                <Control>
+                                    <Input
+                                        readOnly
                                         value={detail.file_cid}
                                     />
                                 </Control>
                             </Field>
                             <Field>
                                 <Label>
-                                    Publication Integrity
+                                    File Integrity
                                 </Label>
                                 <Control>
                                     <Input
@@ -209,6 +220,14 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
                                 }} disabled={detail.paid} loading={payBtnLoading}>
                                     {detail.paid ? "Paid" : `Pay ${detail.price} ETH`}
                                 </Button>
+                            </Columns.Column>
+
+                            <Columns.Column>
+                                <Download href={ipfsConfig.gateway + "/" + detail.decryptor_cid} target="_blank" download>
+                                    <Button color="primary" fullwidth disabled={!detail.paid}>
+                                        Decryptor
+                                    </Button>
+                                </Download>
                             </Columns.Column>
 
                             <Columns.Column>

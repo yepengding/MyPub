@@ -17,6 +17,7 @@ const Publish = ({contract, currentAccountAddress}) => {
     const [titleField, setTitleField] = useState("");
     const [selectedPreview, setSelectedPreview] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedDecryptor, setSelectedDecryptor] = useState(null);
     const [priceFiled, setPriceField] = useState("0");
     const [introductionField, setIntroductionField] = useState("");
     const [disabledPublishBtn, setDisabledPublishBtn] = useState(true);
@@ -42,6 +43,11 @@ const Publish = ({contract, currentAccountAddress}) => {
 
         if (selectedFile == null) {
             toast.info("Please select a file to publish");
+            return;
+        }
+
+        if (selectedDecryptor == null) {
+            toast.info("Please select the decryptor");
             return;
         }
 
@@ -77,8 +83,15 @@ const Publish = ({contract, currentAccountAddress}) => {
         });
         toast.info("Uploaded file");
 
+        const uploadedDecryptor = await upload(selectedDecryptor).then((data) => {
+            const cid = data.cid;
+            const integrity = data.integrity;
+            return {cid, integrity}
+        });
+        toast.info("Uploaded decryptor");
+
         const metaData = generateMetaDataFile(titleField, selectedFile.name, getSuffix(selectedFile.name), currentAccountAddress, price, introductionField,
-            uploadedPreview.cid, uploadedPreview.integrity, uploadedFile.cid, uploadedFile.integrity);
+            uploadedPreview, uploadedFile, uploadedDecryptor);
 
         const uploadedMetaData = await upload(metaData).then((data) => {
             const cid = data.cid;
@@ -147,7 +160,7 @@ const Publish = ({contract, currentAccountAddress}) => {
         return result;
     };
 
-    const generateMetaDataFile = (title, filename, suffix, creator_address, price, introduction, preview_cid, preview_integrity, file_cid, file_integrity) => {
+    const generateMetaDataFile = (title, filename, suffix, creator_address, price, introduction, preview, file, decryptor) => {
         const data = JSON.stringify({
             title: title,
             filename: filename,
@@ -155,10 +168,12 @@ const Publish = ({contract, currentAccountAddress}) => {
             creator_address: creator_address,
             price: price,
             introduction: introduction,
-            preview_cid: preview_cid,
-            preview_integrity: preview_integrity,
-            file_cid: file_cid,
-            file_integrity: file_integrity
+            preview_cid: preview.cid,
+            preview_integrity: preview.integrity,
+            file_cid: file.cid,
+            file_integrity: file.integrity,
+            decryptor_cid: decryptor.cid,
+            decryptor_integrity: decryptor.integrity
         });
 
         const blob = new Blob([data], {type: "application/json"});
@@ -205,11 +220,18 @@ const Publish = ({contract, currentAccountAddress}) => {
                                 onChange={(event) => setSelectedFile(event.target.files[0])}
                             />
                         </Columns.Column>
+                        <Columns.Column>
+                            <InputFile
+                                fullwidth boxed name="file" label='Select the decryptor...'
+                                onChange={(event) => setSelectedDecryptor(event.target.files[0])}
+                            />
+                            <p>Don't have a decryptor? Check details here!</p>
+                        </Columns.Column>
                     </Columns>
 
                     <Field>
                         <Label>
-                            Price
+                            Price (ETH)
                         </Label>
                         <Control>
                             <Input

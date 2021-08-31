@@ -1,5 +1,5 @@
 const ethereumConfig = {
-    publicationAddress: "0xAA675f09577996B839e8EbdBFb9b10588CCbEF7A",
+    publicationAddress: "0x2de852131656BfEe5b91E4Cf86919a23ba60Be75",
     publicationAbi: [
         "event Published(address indexed _from, uint256 _id, uint256 _price)",
         "event Paid(address indexed _from, uint256 _id)",
@@ -15,7 +15,7 @@ const ethereumConfig = {
 }
 
 const ipfsConfig = {
-    gateway: "http://localhost:8080/ipfs"
+    gateway: "http://localhost:5001/ipfs"
 }
 
 export {ethereumConfig, ipfsConfig}

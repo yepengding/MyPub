@@ -23,7 +23,7 @@ contract Publication is ERC721 {
     event Paid(address indexed _from, uint256 _id);
 
     constructor() ERC721("Publication", "PUB") public {
-        _setBaseURI("http://localhost:8080/ipfs/");
+        _setBaseURI("http://localhost:5001/ipfs/");
     }
 
     // Mint an NFT from a publication

@@ -23,8 +23,6 @@ import MyBalance from "./Pages/MyBalance";
 
 const App = ({setAddress}) => {
 
-    // const [provider, setProvider] = useState(null);
-    // const [iface, setIface] = useState(null);
     const [publicationContract, setPublicationContract] = useState(null);
     const [accountAddress, setAccountAddress] = useState(null);
 

@@ -1,41 +1,36 @@
 # MyPub
 
-A Decentralized Privacy-Preserving Publishing Platform
+A Decentralized Privacy-Preserving Publishing Platform.
 
-## Main Components
+## Components
 
-* [contracts/](./contracts)
-* [ui/](./ui)
+* [MyPub Front + Chain Linker](./ui)
+* [MyPub Contract](./contracts)
+* MyPub Cipher
+    - [Encryptor](https://github.com/yepengding/MyPubEncryptor)
+    - [Decryptor](https://github.com/yepengding/MyPubDecryptor)
+* [MyPub Service](https://github.com/yepengding/MyPubService)
 
-## Commands
+## Local Demo
 
-### Compile
+### Setup
 
-```shell
-truffle compile
-```
+1. Set up local test network (such as [Ganache](https://www.trufflesuite.com/ganache) for Ethereum
+   and [IPFSServerAPISimulator](https://github.com/yepengding/IPFSServerAPISimulator) for Filecoin)
+2. Configure `truffle-config.js`, `contract/Publication.sol`, compile and
+   migrate [MyPub contracts](https://github.com/yepengding/MyPub/tree/main/contracts)
+3. Configure `src/config.js` and build [MyPub Front](https://github.com/yepengding/MyPub/tree/main/ui)
+4. Configure `src/config.rs` and compile [MyPub Encryptor](https://github.com/yepengding/MyPubEncryptor)
+5. Configure `GlobalProperties.java`, initialize workspace with encryptor, and
+   build [MyPub Service](https://github.com/yepengding/MyPubService)
 
-### Compile ABI
-
-Install [solc](https://soliditylang.org/)
-
-```shell
-solc --abi *.sol -o build
-```
-
-### Migrate
-
-```shell
-truffle migrate
-```
+### Presentation
 
 ## Tech Stack
 
 ### Contract
 
-- [Truffle Suite](https://www.trufflesuite.com/)
-- [OpenZeppelin](https://openzeppelin.com/contracts/)
-- [IPFS Server API Simulator](https://github.com/yepengding/IPFSServerAPISimulator)
+- [Contract README](https://github.com/yepengding/MyPub/tree/main/contracts#tech-stack)
 
 ### Front-End
 

@@ -38,12 +38,13 @@ const Publication = ({
             const res = await fetch(`${metadataUri}`);
             const data = await res.json();
 
-            data.tokenId = tokenId;
+            const publication_cid = metadataUri.split("/").pop();
+            setCid(publication_cid);
             setTitle(data.title);
             setIntroduction(data.introduction);
-            const metadataCid = metadataUri.split("/").pop();
-            setCid(metadataCid);
-            // setPublicationUrl(`/publication/${metadataCid}`);
+
+            data.publication_cid = publication_cid;
+            data.tokenId = tokenId;
             data.paid = paidTokenIds.includes(tokenId);
 
             setMetadata(data);
