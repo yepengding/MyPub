@@ -7,6 +7,28 @@ A Decentralized Privacy-Preserving Publishing Platform
 * [contracts/](./contracts)
 * [ui/](./ui)
 
+## Commands
+
+### Compile
+
+```shell
+truffle compile
+```
+
+### Compile ABI
+
+Install [solc](https://soliditylang.org/)
+
+```shell
+solc --abi *.sol -o build
+```
+
+### Migrate
+
+```shell
+truffle migrate
+```
+
 ## Tech Stack
 
 ### Contract

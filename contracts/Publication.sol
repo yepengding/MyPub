@@ -15,6 +15,7 @@ contract Publication is ERC721 {
     //     _;
     // }
 
+    mapping(string => uint256) private ids;
     mapping(uint256 => uint256) private prices;
     mapping(address => uint256) private balances;
 
@@ -27,12 +28,14 @@ contract Publication is ERC721 {
 
     // Mint an NFT from a publication
     function mint(string memory _cid, uint256 _price) public returns (uint256) {
+        require(_price > 0, "Price should be positive");
         _id.increment();
 
         uint256 newId = _id.current();
         _mint(msg.sender, newId);
         _setTokenURI(newId, _cid);
 
+        ids[_cid] = newId;
         prices[newId] = _price;
         emit Published(msg.sender, newId, _price);
         // Creator automatically paid
@@ -53,6 +56,10 @@ contract Publication is ERC721 {
         require(amount > 0 && amount <= balances[msg.sender], "Cannot withdraw more than current balance.");
         balances[msg.sender] -= amount;
         msg.sender.transfer(amount);
+    }
+
+    function getTokenId(string memory _cid) public view returns (uint256) {
+        return ids[_cid];
     }
 
     function getBalance() public view returns (uint256) {
