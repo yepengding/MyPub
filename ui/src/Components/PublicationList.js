@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Publication from './Publication';
-import {Button, Columns, Content, Form, Modal} from 'react-bulma-components';
+import {Box, Button, Columns, Container, Content, Form, Modal} from 'react-bulma-components';
 import {BigNumber} from "ethers";
 import styled from "styled-components";
 import {parseUnits} from "ethers/lib/utils";
@@ -67,11 +67,14 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
                 const metadataUri = await contract.tokenURI(tokenId);
 
                 const newItem = (
-                    <Columns.Column key={i}>
+                    // <Columns.Column key={i}>
+                    <Box key={i}>
                         <Publication metadataUri={metadataUri} tokenId={tokenId} paidTokenIds={paidTokenIds}
                                      setDetail={setDetail}
                                      setDetailModalShow={setDetailModalShow}/>
-                    </Columns.Column>
+                    </Box>
+
+                    // </Columns.Column>
                 );
 
                 setPublications((prev) => {
@@ -108,9 +111,9 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
 
     return (
         <>
-            <Columns>
+            <Container>
                 {publications}
-            </Columns>
+            </Container>
             <Modal
                 show={detailModalShow}
                 onClose={() => {
@@ -223,7 +226,8 @@ const PublicationList = ({contract, limit, accountAddress, currentAccountAddress
                             </Columns.Column>
 
                             <Columns.Column>
-                                <Download href={ipfsConfig.gateway + "/" + detail.decryptor_cid} target="_blank" download>
+                                <Download href={ipfsConfig.gateway + "/" + detail.decryptor_cid} target="_blank"
+                                          download>
                                     <Button color="primary" fullwidth disabled={!detail.paid}>
                                         Decryptor
                                     </Button>

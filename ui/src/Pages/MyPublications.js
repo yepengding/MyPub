@@ -1,4 +1,4 @@
-import {Columns, Heading, Section,} from 'react-bulma-components';
+import {Container, Heading, Section,} from 'react-bulma-components';
 
 import Hero from '../Components/Hero';
 import PublicationList from '../Components/PublicationList';
@@ -11,10 +11,10 @@ const MyPublications = ({contract, accountAddress}) => {
         <Section>
             <Hero/>
             <Heading size={5} renderAs="h1">My Publications</Heading>
-            <Columns>
+            <Container>
                 {contract && accountAddress &&
                 <PublicationList contract={contract} accountAddress={accountAddress}/>}
-            </Columns>
+            </Container>
             <p>Go <Link to="/mine/publish">here</Link> to publish your work :)</p>
         </Section>
     );

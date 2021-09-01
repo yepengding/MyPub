@@ -1,24 +1,22 @@
 import React, {useCallback, useEffect, useState} from "react";
 import styled from 'styled-components';
-import {Box, Button, Panel} from 'react-bulma-components';
+import {Content, Media} from 'react-bulma-components';
 
-const {Block} = Panel;
-
-const Title = styled.h2({
+const Title = styled.strong({
+    display: "block",
     color: "#242424",
     fontWeight: "bold",
-    fontSize: "1.3rem",
-    marginTop: "0.3rem"
+    fontSize: "1.6rem"
 });
 
-const SubTitle = styled.h3({
-    color: "#242424",
-    marginTop: "0.1rem",
+const SubTitle = styled.strong({
+    display: "block",
+    color: "#242424"
 });
 
-const Details = styled.h5({
-    color: "#292A2D"
-});
+const DetailBtn = styled.button({
+
+})
 
 const Publication = ({
                          metadataUri,
@@ -30,6 +28,7 @@ const Publication = ({
     const [title, setTitle] = useState(`Loading...`);
     const [introduction, setIntroduction] = useState(`Loading...`);
     const [cid, setCid] = useState(`Loading...`);
+    const [price, setPrice] = useState(`Loading...`);
     // const [publicationUrl, setPublicationUrl] = useState(``);
     const [metadata, setMetadata] = useState(null);
 
@@ -42,6 +41,7 @@ const Publication = ({
             setCid(publication_cid);
             setTitle(data.title);
             setIntroduction(data.introduction);
+            setPrice(data.price);
 
             data.publication_cid = publication_cid;
             data.tokenId = tokenId;
@@ -60,20 +60,29 @@ const Publication = ({
 
     return (
         <>
-            <Box>
-                <Title>{title}</Title>
-                <SubTitle>{cid}</SubTitle>
-                <Details>{introduction}</Details>
-                <Block>
-                    <Button color="info" fullwidth onClick={() => {
-                        setDetail(metadata);
-                        setDetailModalShow(true);
-                    }}>
-                        Detail
-                    </Button>
-                </Block>
+            <Media renderAs="article">
+                <Media.Item align="center">
+                    <Content>
+                        <p>
+                            <Title>{title}</Title>
+                            <SubTitle>{cid}</SubTitle>
+                            {introduction}
+                            <br/>
+                            <small>
 
-            </Box>
+                            </small>
+
+                            <span>
+                                    <strong>{price} ETH</strong> <DetailBtn onClick={() => {
+                                setDetail(metadata);
+                                setDetailModalShow(true);
+                            }}>Detail</DetailBtn>
+                                </span>
+                        </p>
+                    </Content>
+                </Media.Item>
+
+            </Media>
 
         </>
     );
