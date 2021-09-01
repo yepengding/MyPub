@@ -40,10 +40,35 @@ A Decentralized Privacy-Preserving Publishing Platform.
 
 ### Architecture
 
-![Architecture](./document/Architecture.png)
+![Architecture](./doc/Architecture.png)
 
 ### Sequence Diagrams
 
-![Chain Linking](./document/ChainLinking.png)
-![Publishing](./document/Publishing.png)
+![Chain Linking](./doc/ChainLinking.png)
+![Publishing](./doc/Publishing.png)
 
+## UI
+
+### Main
+
+![Main](./doc/ui/main.png)
+
+### Explore
+
+![Explore](./doc/ui/explore.png)
+
+### Publish
+
+![Publish](./doc/ui/publish.png)
+
+### My Publications
+
+![My Publications](./doc/ui/my_publications.png)
+
+### Balance
+
+![Balance](./doc/ui/balance.png)
+
+### Encryption
+
+![Encryption](./doc/ui/encryption.png)
