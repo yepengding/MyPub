@@ -2,6 +2,11 @@
 
 A Decentralized Privacy-Preserving Publishing Platform.
 
+## Slides
+
+* [English](https://github.com/yepengding/MyPub/blob/main/doc/talk/MyPub-en.pdf)
+* [Japanese](https://github.com/yepengding/MyPub/blob/main/doc/talk/MyPub-jp.pdf)
+
 ## Components
 
 * [MyPub Front + Chain Linker](https://github.com/yepengding/MyPub/tree/main/ui)
