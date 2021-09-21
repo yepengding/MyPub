@@ -7,6 +7,10 @@ A Decentralized Privacy-Preserving Publishing Platform.
 * [English](https://github.com/yepengding/MyPub/blob/main/doc/talk/MyPub-en.pdf)
 * [Japanese](https://github.com/yepengding/MyPub/blob/main/doc/talk/MyPub-jp.pdf)
 
+### Demo Video
+* [Demo video with illustration (in Japanese)](https://youtu.be/iWzx6xJPVAw)
+* [Raw demo video](https://youtu.be/BAB9LXLFbzo)
+
 ## Components
 
 * [MyPub Front + Chain Linker](https://github.com/yepengding/MyPub/tree/main/ui)
@@ -28,8 +32,6 @@ A Decentralized Privacy-Preserving Publishing Platform.
 4. Configure `src/config.rs` and compile [MyPub Encryptor](https://github.com/yepengding/MyPubEncryptor)
 5. Configure `GlobalProperties.java`, initialize workspace with encryptor, and
    build [MyPub Service](https://github.com/yepengding/MyPubService)
-
-### Presentation
 
 ## Tech Stack
 
